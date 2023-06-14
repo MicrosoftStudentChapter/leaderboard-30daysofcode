@@ -1,3 +1,4 @@
+
 import { Typography, TextField, Box, AppBar, Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
@@ -42,6 +43,6 @@ export default function App() {
     </Box>
     <Detail />
   </div>;
-}
+
 
 
