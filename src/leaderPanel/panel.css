@@ -1,0 +1,6 @@
+.table{
+    width:70vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
