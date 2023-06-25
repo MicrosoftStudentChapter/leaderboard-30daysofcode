@@ -100,7 +100,7 @@ export default function Home(){
 
     </AppBar>
     <Box textAlign="center"><Typography variant="h2" >Welcome <br />to <br />30 Days of Code 🔥</Typography><br />
-      <Button variant="contained">Leader Board</Button><br /><br />
+      <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button><br /><br />
 
       <Typography textAlign="center">Enter your GitHub ID</Typography><br />
       <TextField className="id-textfield" name='id' label="Github ID" sx={{
