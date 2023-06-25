@@ -43,6 +43,8 @@ export default function App() {
     </Box>
     <Detail />
   </div>;
+  
+}
 
 
 
