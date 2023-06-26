@@ -1,15 +1,17 @@
-import { Typography ,TextField } from '@mui/material';
-import Button from '@mui/material/Button';
 
-
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./Home/home";
+import LeaderboardPage from "./leaderboard/leaderboard";
 export default function App() {
-  return <div>
-    <Typography variant="h2"
-    align="center">Welcome <br/>to <br/>30 Days of Code 🔥</Typography>
-  <Button variant="contained">Leader Board</Button>
-  <TextField label="Github ID" color="primary"></TextField>
-  <TextField label="Github Repo Link" color="primary"></TextField>
-</div>;
+  return(
+  <Router>
+    <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/leaderboard" element={<LeaderboardPage />} />
+    </Routes>
+  </Router>
+  );
 }
+
 
 
