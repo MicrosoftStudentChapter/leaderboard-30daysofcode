@@ -1,11 +1,12 @@
-import { Typography, TextField, Box, AppBar, Grid } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Typography, TextField, Box, AppBar, Grid, Button} from '@mui/material';
+
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import Detail from './Detail';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { collection, addDoc,getFirestore, query, where, getDocs } from "firebase/firestore";
 import app from "../backend";
+import DayCount from './DayCount';
 const db = getFirestore(app);
 export default function Home(){
     const navigate = useNavigate();
@@ -93,8 +94,8 @@ export default function Home(){
       
       <Grid justifyContent="space-between">
       <Typography noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: "flex" } }}>
-          <img src=".././public/Logo.png" className="mlsc-logo" style={{ height: 80, }} />
-          <Typography sx={{marginLeft:"auto"}} >Day 0</Typography>
+          <img src=".././public/Logo.png"  style={{ height: 80, }} />
+          <DayCount />
         </Typography>
       </Grid>
 
@@ -102,14 +103,14 @@ export default function Home(){
     <Box textAlign="center"><Typography variant="h2" >Welcome <br />to <br />30 Days of Code 🔥</Typography><br />
       <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button><br /><br />
 
-      <Typography textAlign="center">Enter your GitHub ID</Typography><br />
-      <TextField className="id-textfield" name='id' label="Github ID" sx={{
+      <Typography>Enter your GitHub ID</Typography><br />
+      <TextField name='id' label="Github ID" sx={{
         backgroundColor: "whitesmoke",
         borderRadius: '8px' ,
       }} value={user.id} onChange={getUserData} required></TextField><br /><br />
 
-      <Typography textAlign="center" >Enter your GitHub Repository Name</Typography><br />
-      <TextField label="Github Repo Link" name='repo' color="primary" 
+      <Typography>Enter your GitHub Repository Name</Typography><br />
+      <TextField label="Github Repo Name" name='repo' color="primary" 
       sx={{
         backgroundColor: "whitesmoke",
         borderRadius: '8px' ,
@@ -121,7 +122,7 @@ export default function Home(){
       {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
       <Button variant="contained" onClick={postData}>Submit</Button><br /><br />
 
-      <Typography textAlign="center" >Know More</Typography><br />
+      <Typography >Know More</Typography><br />
       <KeyboardDoubleArrowDownIcon />
       
     </Box>
