@@ -4,8 +4,7 @@ export default function Detail() {
     return <div>
         <Box sx={{ m: 2 }}>
             <Typography variant="h3">What is 30 Days of Code?</Typography>
-            <Typography >It is a coding contest for students to enhance there coding knowledge and boost their contribution activity on GitHub.</Typography>
-<br />
+            <Typography sx={{m:2}} >It is a coding contest for students to enhance there coding knowledge and boost their contribution activity on GitHub.</Typography>
             <Typography variant="h3">How to Participate?</Typography>
 
             <List sx={{ listStyleType: "number", listStylePosition: 'inside' }}>
