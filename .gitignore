@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+backend.tsx
 
 # Editor directories and files
 .vscode/*
@@ -22,5 +23,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
+.yarn
 todo.md
