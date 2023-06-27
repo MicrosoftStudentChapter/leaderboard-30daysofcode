@@ -11,6 +11,7 @@ import { collection,getFirestore, query, getDocs,deleteDoc,doc } from "firebase/
 import axios from 'axios';
 import {useState,useEffect} from 'react';
 import { Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 const db = getFirestore(app);
 
 async function removeInactiveUsers() {
@@ -162,6 +163,7 @@ export default function Panel() {
       const commitResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/commits/${sha}`);
       const commit = commitResponse.data;
 
+      
       // Check if the files property exists and is an array
       if (commit.files && Array.isArray(commit.files)) {
         let linesChanged = 0;
@@ -184,7 +186,7 @@ export default function Panel() {
   }
   
   removeInactiveUsers();
-
+  
   useEffect(() => {
     users();
   }, []);
@@ -196,7 +198,7 @@ export default function Panel() {
         <TableHead>
           <TableRow>
             <TableCell onClick={sortAccordingToScore}>Rank</TableCell>
-            <TableCell align="center">Name</TableCell>
+            <TableCell align="center" >Name</TableCell>
             <TableCell align="center">Project</TableCell>
             <TableCell align="center" onClick={sortAccordingToCommits}>Total Commits</TableCell>
             <TableCell align="center" onClick={sortAccordingToIssues}>Issues</TableCell>
@@ -208,8 +210,8 @@ export default function Panel() {
           {rows.map((row) => (
             <TableRow key={row.rank}>
               <TableCell component="th" scope="row">{row.rank}</TableCell>
-              <TableCell align="center">{row.name}</TableCell>
-              <TableCell align="center">{row.project}</TableCell>
+              <TableCell align="center"><Link  to={`https://github.com/${row.name}`} target="_blank">{row.name}</Link></TableCell>
+              <TableCell align="center"><Link to={`https://github.com/${row.name}/${row.project}`} target="_blank" >{row.project} </Link></TableCell>
               <TableCell align="center">{row.commits.toFixed(2)}</TableCell>
               <TableCell align="center">{row.issues.toFixed(2)}</TableCell>
               <TableCell align="center">{row.avgComm.toFixed(2)}</TableCell>
