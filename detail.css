@@ -1,0 +1,166 @@
+html{
+    width: auto;
+   
+}
+.boxo > .head3{
+    font-family: 'Poppins';
+    
+}
+.boxo> p{
+    font-family: 'Poppins';
+    display: block;
+    font-size: x-large;
+}
+.head2{
+    font-family: 'Raleway';
+    font-size: 55px;
+}
+
+.boxo{
+<<<<<<< HEAD
+    margin: 70px;
+=======
+    margin: 150px;
+>>>>>>> 40ff4fe0817fd4f4bb4b17cdbf1afcc3122916f6
+    padding: 10px;
+}
+.img{
+    width: 60px;
+    height: 60px;
+}
+.detailed{
+    display: flex;
+    align-items: center;
+    margin: 2px;
+  
+}
+.flexo{
+    display:flex;
+    flex-wrap: wrap;
+<<<<<<< HEAD
+    flex-flow: column;
+=======
+>>>>>>> 40ff4fe0817fd4f4bb4b17cdbf1afcc3122916f6
+    
+}
+.form{
+    /* text-align: right; */
+    margin: 20px;
+}
+.dayc{
+    font-size: 20px;
+}
+
+.lists{
+    text-align: left;
+    display:block;
+    gap: 10px;
+   font-family: 'Poppins';
+
+
+   
+}
+
+/* .lists > li{
+    list-style-type: none;
+
+    /* vertical-align: baseline; */
+
+.list1{
+    align-items: center
+    ;
+    text-align: center;
+}
+
+.list> li{
+    list-style: none;
+}
+.hero{
+    font-size: 30px;
+}
+@media (max-width: 950px){
+    .detailed{
+        display: flex;
+        flex-wrap: wrap;
+        gap:5px;
+    }
+    .flexo{
+        margin-top: -135px;
+    }
+    .imglogo{
+        width: 250px;
+        height: 250px;
+    }
+}
+
+@media(max-width: 750px ){
+    .detailed{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: auto;
+    }
+}
+
+@media(max-width: 550px ){
+    .detailed{
+        display: flex;
+        flex-direction: column;
+       
+        max-width: auto;
+    }
+}
+
+@media(max-width: 350px ){
+    .detailed{
+        display: flex;
+        flex-direction: column;
+        /* gap: 5px; */
+        width: auto;
+        overflow: hidden;
+        text-align: left;
+    }
+    .boxo{
+        width: auto;
+    }
+    .imglogo{
+        height: 100px;
+        width: 100px;
+       
+    }
+
+    .lists{
+        font-size: 18px;
+       
+    }
+   
+}
+
+@media (max-width: 300px) {
+    .detailed{
+        display: flex;
+        flex-direction: column;
+       flex-wrap: wrap;
+        max-width: auto;
+        margin: 0 auto;
+    }
+    .lists{
+        font-size: 10px;
+       
+    }
+    .boxo{
+        /* width: auto; */
+        align-items: left;
+    }
+    .hero{
+        font-size: 10px;
+    }
+}
+
+@media(max-width: 200px){
+    .detailed{
+        display: flex;
+        flex-direction: column;
+        max-width: auto;
+    }
+}
