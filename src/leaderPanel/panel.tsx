@@ -1,17 +1,10 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { Typography, Table, TableBody ,TableCell,TableContainer,TableHead,TableRow,Paper} from '@mui/material';
+import { collection,getFirestore, query, getDocs,deleteDoc,doc } from "firebase/firestore";
+import {useState,useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import './panel.css';
 import app from '../backend';
-import { collection,getFirestore, query, getDocs,deleteDoc,doc } from "firebase/firestore";
 import axios from 'axios';
-import {useState,useEffect} from 'react';
-import { Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
 const db = getFirestore(app);
 
 async function removeInactiveUsers() {
@@ -210,8 +203,8 @@ export default function Panel() {
           {rows.map((row) => (
             <TableRow key={row.rank}>
               <TableCell component="th" scope="row">{row.rank}</TableCell>
-              <TableCell align="center"><Link  to={`https://github.com/${row.name}`} target="_blank">{row.name}</Link></TableCell>
-              <TableCell align="center"><Link to={`https://github.com/${row.name}/${row.project}`} target="_blank" >{row.project} </Link></TableCell>
+              <TableCell  align="center"><Link  style={{textDecoration:"none",color: "black" }} to={`https://github.com/${row.name}`} target="_blank">{row.name}</Link></TableCell>
+              <TableCell align="center"><Link style={{textDecoration:"none" ,color: "black"  }} to={`https://github.com/${row.name}/${row.project}`} target="_blank" >{row.project} </Link></TableCell>
               <TableCell align="center">{row.commits.toFixed(2)}</TableCell>
               <TableCell align="center">{row.issues.toFixed(2)}</TableCell>
               <TableCell align="center">{row.avgComm.toFixed(2)}</TableCell>
