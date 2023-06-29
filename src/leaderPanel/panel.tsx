@@ -245,7 +245,7 @@ export default function Panel() {
             <TableCell align="center" >Name</TableCell>
             <TableCell align="center">Project</TableCell>
             <TableCell align="center" onClick={sortAccordingToCommits}>Total Commits</TableCell>
-            <TableCell align="center" onClick={sortAccordingToIssues}>Issues</TableCell>
+            <TableCell align="center" onClick={sortAccordingToIssues}>Issues and Pull Requests</TableCell>
             <TableCell align="center"onClick={sortAccordingToAvgComm} title='Total commits divided by number of days passed'>Average Commits per Day</TableCell>
             <TableCell align="center"onClick={sortAccordingToScore} title='0.8*Commits + 0.5*issues + average commits'>Total Score</TableCell>
             <TableCell align="center"onClick={sortAccordingToStrikes} >Strikes</TableCell>

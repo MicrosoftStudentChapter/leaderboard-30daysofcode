@@ -1,34 +1,47 @@
-import { Typography, Box, ListItem, List } from '@mui/material';
-
+import {  Box } from '@mui/material';
+import {BiSolidRightArrowCircle} from "react-icons/bi"; 
+import './detail.css'
 export default function Detail() {
-    return <div>
-        <Box sx={{ m: 2 }}>
-            <Typography variant="h3">What is 30 Days of Code?</Typography>
-            <Typography sx={{m:2}} >It is a coding contest for students to enhance there coding knowledge and boost their contribution activity on GitHub.</Typography>
-            <Typography variant="h3">How to Participate?</Typography>
-
-            <List sx={{ listStyleType: "number", listStylePosition: 'inside' }}>
-                <ListItem sx={{ display: 'list-item' }}>
-                    Enter your Github ID.
-                </ListItem>
-                <ListItem sx={{ display: 'list-item' }}>
-                    Enter the link of the repository of your projects where will you be sumbitting your commits.
-                </ListItem>
-            </List>
+    return <div className="detailed">
+        <img src="./Logo.png"  className="imglogo" />
+        <Box className="boxo" >
+            <div className="flexo">
+            <h3 className="hero" >
+            
+             What is 30 Days of Code?</h3>
+            <p className="lists" ><ul><li>It is a coding contest for students to enhance there coding knowledge and boost their contribution activity on GitHub.</li></ul></p>
+            <h3 className="hero" >How to Participate?</h3>
 
 
-            <Typography variant="h3">Benefits</Typography>
-            <List sx={{ listStyleType: "number", listStylePosition: 'inside' }}>
-                <ListItem sx={{ display: 'list-item' }}>
-                    Enhance your coding skills by developing a great project on your own.
-                </ListItem>
-                <ListItem sx={{ display: 'list-item' }}>
-                    Boost your Open-Source contribution on GitHub.com.
-                </ListItem>
-                <ListItem sx={{ display: 'list-item' }}>
-                    Have a chance to win exciting prizes on top ranks.
-                </ListItem>
-            </List>
+            <ul className="lists">
+                <li>
+                 Enter your Github ID {BiSolidRightArrowCircle}
+                </li>
+
+                <li>
+                   Enter the link of the repository of your projects where will you be sumbitting your commits
+                </li>
+
+            </ul>
+
+            
+            <h3 className="hero">Benefits</h3>
+            
+
+            <ul className="lists">
+                <li>
+                Enhance your coding skills by developing a great project on your own.  
+                </li>
+
+                <li>
+                Boost your Open-Source contribution on GitHub.com.
+                </li>
+
+                <li>
+                Have a chance to win exciting prizes on top ranks. 
+                </li>
+            </ul>
+            </div>
         </Box>
 
     </div>

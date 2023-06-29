@@ -1,5 +1,5 @@
 import { Typography, TextField, Box, AppBar, Grid, Button} from '@mui/material';
-
+import { Link } from "react-scroll";
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import Detail from './Detail';
 import { useNavigate } from "react-router-dom";
@@ -132,10 +132,12 @@ export default function Home(){
       {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
       <Button variant="contained" onClick={postData}>Submit</Button><br /><br />
 
-      <Typography >Know More</Typography><br />
-      <KeyboardDoubleArrowDownIcon />
+      <Typography textAlign="center" >Know More</Typography>
+      <Link to='detail' smooth={true}><KeyboardDoubleArrowDownIcon /></Link>
       
     </Box>
-    <Detail />
+    <div id='detail'>
+      <Detail />
+    </div>
   </div>;
 }
