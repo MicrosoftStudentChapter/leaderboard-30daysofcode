@@ -1,0 +1,29 @@
+.logo{
+    width: 10vw;
+    height: 100%;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+.days{
+    font-size: 2vw;
+    margin-top: 15px;
+    margin-right: 15px;
+}
+
+.logoAndDay{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: fit-content;
+}
+
+.heading{
+    font-size: 3vw;
+}
+
+.headingBox{
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-end;
+}
