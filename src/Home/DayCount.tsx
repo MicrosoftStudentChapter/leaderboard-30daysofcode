@@ -20,6 +20,6 @@ export default function DayCount() {
         };
     }, []);
 
-    return <Typography sx={{ marginLeft: "auto" }}>Day {dayCount}</Typography>;
+    return <Typography variant='h4' sx={{ marginLeft: "auto" }}>Day {dayCount}</Typography>;
 }
 

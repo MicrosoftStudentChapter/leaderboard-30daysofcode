@@ -1,16 +1,10 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { Typography, Table, TableBody ,TableCell,TableContainer,TableHead,TableRow,Paper} from '@mui/material';
+import {useState,useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import './panel.css';
 import app from '../backend';
 import { collection, getFirestore, query, getDocs, updateDoc, where } from "firebase/firestore";
 import axios from 'axios';
-import {useState,useEffect} from 'react';
-import { Typography } from '@mui/material';
 const db = getFirestore(app);
 
 async function removeInactiveUsers() {
@@ -182,6 +176,7 @@ export default function Panel() {
       let strike=querySnapshot.docs[0].get('strike').empty?0:querySnapshot.docs[0].get('strike');
       if(laststrikeSHA!=sha){
 
+      
       // Check if the files property exists and is an array
       if (commit.files && Array.isArray(commit.files)) {
         let linesChanged = 0;
@@ -235,7 +230,7 @@ export default function Panel() {
   }
   
   removeInactiveUsers();
-
+  
   useEffect(() => {
     users();
   }, []);
@@ -247,7 +242,7 @@ export default function Panel() {
         <TableHead>
           <TableRow>
             <TableCell onClick={sortAccordingToScore}>Rank</TableCell>
-            <TableCell align="center">Name</TableCell>
+            <TableCell align="center" >Name</TableCell>
             <TableCell align="center">Project</TableCell>
             <TableCell align="center" onClick={sortAccordingToCommits}>Total Commits</TableCell>
             <TableCell align="center" onClick={sortAccordingToIssues}>Issues</TableCell>
@@ -260,8 +255,8 @@ export default function Panel() {
           {rows.map((row) => (
             <TableRow key={row.rank}>
               <TableCell component="th" scope="row">{row.rank}</TableCell>
-              <TableCell align="center">{row.name}</TableCell>
-              <TableCell align="center">{row.project}</TableCell>
+              <TableCell  align="center"><Link  style={{textDecoration:"none",color: "black" }} to={`https://github.com/${row.name}`} target="_blank">{row.name}</Link></TableCell>
+              <TableCell align="center"><Link style={{textDecoration:"none" ,color: "black"  }} to={`https://github.com/${row.name}/${row.project}`} target="_blank" >{row.project} </Link></TableCell>
               <TableCell align="center">{row.commits.toFixed(2)}</TableCell>
               <TableCell align="center">{row.issues.toFixed(2)}</TableCell>
               <TableCell align="center">{row.avgComm.toFixed(2)}</TableCell>
