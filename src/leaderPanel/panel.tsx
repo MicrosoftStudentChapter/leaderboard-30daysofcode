@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import './panel.css';
 import app from '../backend';
-import { collection,getFirestore, query, getDocs,deleteDoc,doc } from "firebase/firestore";
+import { collection, getFirestore, query, getDocs, updateDoc, where } from "firebase/firestore";
 import axios from 'axios';
 import {useState,useEffect} from 'react';
 import { Typography } from '@mui/material';
@@ -16,6 +16,7 @@ const db = getFirestore(app);
 async function removeInactiveUsers() {
   const previousDay = new Date();
   previousDay.setDate(previousDay.getDate() - 1);
+  previousDay.setHours(0, 0, 0, 0);
   const q = query(collection(db, "users"));
   const querySnapshot = await getDocs(q);
   for (const document of querySnapshot.docs) {
@@ -30,7 +31,9 @@ async function removeInactiveUsers() {
     if (previousDay < timestamp) {
       //console.log("Previous date is earlier than the timestamp.");
     } else if (previousDay > timestamp) {
-      await deleteDoc(doc(db, "users", document.id));
+        await updateDoc(document.ref, {
+          disqualified: true,
+        });
     } else {
       //console.log("Previous date is the same as the timestamp.");
     }
@@ -45,8 +48,9 @@ function createData(
   issues: number,
   avgComm: number,
   score: number,
+  strikes: number
 ) {
-  return {rank, name, project, commits, issues, avgComm, score };
+  return {rank, name, project, commits, issues, avgComm, score, strikes };
 }
 
 
@@ -93,6 +97,7 @@ export default function Panel() {
     issues: number;
     avgComm: number;
     score: number;
+    strikes:number;
   };
   var [rows,setRows] = useState<Array<RowType>>([]);
   var rank=1;
@@ -107,8 +112,13 @@ export default function Panel() {
       const commits = await fetchCommits(id, repo);
       const issues = await fetchIssues(id, repo);
       const avgCom = await calculateAverageCommits(id, repo, 7);
-      const scoreToReduce = await fetchMostRecentCommit(id, repo);
-      updatedRows.push(
+      var strikes=await striker(id, repo);
+      if(strikes>3){
+        await updateDoc(doc.ref, {
+          disqualified: true
+        });
+      }
+      if(strikes<=3 && strikes!=-1){updatedRows.push(
         createData(
           rank,
           id,
@@ -116,9 +126,10 @@ export default function Panel() {
           commits,
           issues,
           avgCom,
-          0.8 * commits + 0.5 * issues + avgCom + scoreToReduce
+          0.8 * commits + 0.5 * issues + avgCom,
+          strikes
         )
-      );
+      );}
       
     }
 
@@ -152,15 +163,24 @@ export default function Panel() {
     rows.sort((a,b)=>b.score-a.score);
     setRows([...rows]);
   }
+  function sortAccordingToStrikes(){
+    rows.sort((a,b)=>b.strikes-a.strikes);
+    setRows([...rows]);
+  }
 
 
-  async function fetchMostRecentCommit(owner:string, repo:string) {
+  async function striker(owner:string, repo:string) {
     try {
       const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/commits`);
       const mostRecentCommit = response.data[0]; // Get the first (most recent) commit from the response
       const sha= mostRecentCommit.sha;
       const commitResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/commits/${sha}`);
       const commit = commitResponse.data;
+      const q = query(collection(db, "users"),where("id", "==", owner));
+      const querySnapshot = await getDocs(q);
+      const laststrikeSHA=await querySnapshot.docs[0].get('lastStrikeSha');
+      let strike=querySnapshot.docs[0].get('strike').empty?0:querySnapshot.docs[0].get('strike');
+      if(laststrikeSHA!=sha){
 
       // Check if the files property exists and is an array
       if (commit.files && Array.isArray(commit.files)) {
@@ -170,17 +190,48 @@ export default function Panel() {
           linesChanged += file.changes;
         }
   
+        const dis= await querySnapshot.docs[0].get('disqualified')
+        if(dis) return -1;
+
+        if(owner!=mostRecentCommit.author.login){
+          try {
+            querySnapshot.docs.forEach(async (doc) => {
+              await updateDoc(doc.ref, {
+                strike: strike+1,
+                lastStrikeSha: sha
+              });
+          })
+          return strike+1;
+          } catch (e) {
+            console.error("Error adding document: ", e);
+            return -1;
+          }
+        }
+
         if(linesChanged<3) {
-          //console.log('Less than 3 lines changed in the most recent commit.');
-          return -3;
+          try {
+            querySnapshot.docs.forEach(async (doc) => {
+              await updateDoc(doc.ref, {
+                strike: strike+1,
+                lastStrikeSha: sha
+              });
+          })
+          return strike+1;
+          } catch (e) {
+            console.error("Error adding document: ", e);
+            return -1;
+          }
         }
         return 0;
       }
-      return 0;
-    } catch (error) {
-      //console.error(`Failed to fetch commit details: ${error}`);
-      return 0;
+    }else{
+      return strike;
     }
+    } catch (error) {
+      console.error(`Failed to fetch commit details: ${error}`);
+      return -1;
+    }
+    return -1;
   }
   
   removeInactiveUsers();
@@ -202,6 +253,7 @@ export default function Panel() {
             <TableCell align="center" onClick={sortAccordingToIssues}>Issues</TableCell>
             <TableCell align="center"onClick={sortAccordingToAvgComm} title='Total commits divided by number of days passed'>Average Commits per Day</TableCell>
             <TableCell align="center"onClick={sortAccordingToScore} title='0.8*Commits + 0.5*issues + average commits'>Total Score</TableCell>
+            <TableCell align="center"onClick={sortAccordingToStrikes} >Strikes</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -214,6 +266,7 @@ export default function Panel() {
               <TableCell align="center">{row.issues.toFixed(2)}</TableCell>
               <TableCell align="center">{row.avgComm.toFixed(2)}</TableCell>
               <TableCell align="center">{row.score.toFixed(2)}</TableCell>
+              <TableCell align="center">{row.strikes}</TableCell>
             </TableRow>
           ))}
         </TableBody>

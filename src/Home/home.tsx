@@ -11,8 +11,8 @@ const db = getFirestore(app);
 export default function Home(){
     const navigate = useNavigate();
 
-    const [idError, setIdError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid id error
-    const [repoError, setRepoError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid repo error
+    const [idError, setIdError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid id error, 3 - some error occured, 4 - already disqualified
+    const [repoError, setRepoError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid repo error, 3 - some error occured
 
     const [user, setUser] = useState({
         id: "",
@@ -59,9 +59,15 @@ export default function Home(){
         return 3;
       }
         
-        const q = query(collection(db, "users"), where("id", "==", user.id));
+        try {const q = query(collection(db, "users"), where("id", "==", user.id));
         const querySnapshot = await getDocs(q);
+        
         if (!querySnapshot.empty) {
+          const disq=await querySnapshot.docs[0].get('disqualified');
+          if(disq){
+            setIdError(4);
+            return 4;
+          }
           setIdError(1);
         }
         const q1 = query(collection(db, "users"), where("repo", "==", user.repo));
@@ -73,12 +79,15 @@ export default function Home(){
         if(!querySnapshot.empty || !querySnapshot1.empty){
           return 1;
         }
-
+      } catch (e) {return 3;}
         navigate("/leaderboard");
         try {
             addDoc(collection(db, "users"), {
                 id: user.id,
                 repo: user.repo,
+                strike: 0,
+                disqualified: false,
+                lastStrikeSha:''//sha of the last strike commit
             });
             return 0;
           } catch (e) {
@@ -117,6 +126,7 @@ export default function Home(){
       }} value={user.repo} onChange={getUserData} required></TextField><br /><br />
       {idError==1 && <><Typography textAlign="center" >User already exists</Typography><br /></>}
       {idError==2 && <><Typography textAlign="center" >Invalid GitHub ID</Typography><br /></>}
+      {idError==4 && <><Typography textAlign="center" >Already disqualified</Typography><br /></>}
       {repoError==1 && <><Typography textAlign="center" >Repo already exists</Typography><br /></>}
       {repoError==2 && <><Typography textAlign="center" >Repo does not exists!</Typography><br /></>}
       {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
