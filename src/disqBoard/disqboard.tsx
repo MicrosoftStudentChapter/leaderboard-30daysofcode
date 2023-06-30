@@ -1,5 +1,5 @@
 import background from '../Assets/background.svg';
-import {Typography, Table, TableBody ,TableCell,TableContainer,TableHead,TableRow,Paper} from '@mui/material';
+import {TextField,Typography, Table, TableBody ,TableCell,TableContainer,TableHead,TableRow,Paper} from '@mui/material';
 import logo from '../Assets/MLSC logo.png';
 import './disqboard.css';
 import DayCount,{dayCounter} from '../Home/DayCount';
@@ -127,12 +127,52 @@ function DisqPanel() {
 
     setRows(updatedRows);
     }
+
+    const [searchInput, setSearchInput] = useState('');
+    const [searchResults, setSearchResults] = useState<RowType[]>([]);
+    const [searchExists, setSearchExists] = useState(true);
+
+    function handleSearch(val:string) {
+        setSearchInput(val);
+        const filteredResults = rows.filter((row) => {
+        const usernameMatch = row.name.toLowerCase().includes(searchInput.toLowerCase());
+        const projectMatch = row.project.toLowerCase().includes(searchInput.toLowerCase());
+        return usernameMatch || projectMatch;
+        });
+        if(filteredResults.length === 0) {setSearchExists(false)} else if(searchInput.length<2){setSearchExists(true);setSearchResults(rows)} else {setSearchExists(true); setSearchResults(filteredResults)}
+        
+    };
+
     useEffect(() => {
         users();
     }, []);
     if(rows.length===0) return <><br/><br/><Typography variant="h4" align="center">Loading...</Typography></>
-    return <><div className='table'>
+    return (<div className='table'>
     <Typography variant='h5' align='center'>Disqualified Participants</Typography><br />
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+    <TextField 
+        variant='outlined'
+        sx={{alignContent:"center",display:'flex',justifyItems:'center',width:'50%'}}
+        inputProps={{className:"textfield_input"}}
+        label="Search by username or project name" 
+        value={searchInput} 
+        onChange={(e) => handleSearch(e.target.value)}
+        color='primary'
+        
+        InputProps={{
+            style: {
+                backgroundColor: 'white',
+            }
+        }}
+        InputLabelProps={{
+            style: {
+                color: 'grey',
+            }
+        }}
+    />
+    {!searchExists && <><Typography variant="h6" align="center">Search Not Found</Typography></>}
+     <br />
+
     <TableContainer component={Paper}>
         <Table>
             <TableHead>
@@ -146,7 +186,7 @@ function DisqPanel() {
                 </TableRow>
             </TableHead>
             <TableBody>
-            {rows.map((row) => (
+            {(searchResults.length > 0 ? searchResults : rows).map((row) => (
                 <TableRow>
                     <TableCell  align="center"><Link  style={{textDecoration:"none",color: "black" }} to={`https://github.com/${row.name}`} target="_blank">{row.name}</Link></TableCell>
                     <TableCell align="center"><Link style={{textDecoration:"none" ,color: "black"  }} to={`https://github.com/${row.name}/${row.project}`} target="_blank" >{row.project} </Link></TableCell>
@@ -159,6 +199,6 @@ function DisqPanel() {
             </TableBody>
         </Table>
     </TableContainer>
-</div>
-</>;
+    </div>
+</div>);
 }
