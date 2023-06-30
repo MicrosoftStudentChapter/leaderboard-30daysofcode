@@ -109,9 +109,11 @@ export default function Home(){
       </Grid>
 
     </AppBar>
-    <Box textAlign="center"><Typography variant="h2" >Welcome <br />to <br />30 Days of Code 🔥</Typography><br />
-      <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button><br /><br />
-
+    <Box textAlign="center" ><Typography variant="h2" >Welcome to 30 Days of Code🔥</Typography><br />
+    <div style={{display:'flex',gap:'5px',justifyContent:'center'}}>
+      <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button>
+      <Button variant="contained" onClick={()=>navigate("/disqualified")}>Disqualified</Button>
+    </div><br /><br />
       <Typography>Enter your GitHub ID</Typography><br />
       <TextField name='id' label="Github ID" sx={{
         backgroundColor: "whitesmoke",
@@ -136,6 +138,7 @@ export default function Home(){
       <Link to='detail' smooth={true}><KeyboardDoubleArrowDownIcon /></Link>
       
     </Box>
+    <br />
     <div id='detail'>
       <Detail />
     </div>

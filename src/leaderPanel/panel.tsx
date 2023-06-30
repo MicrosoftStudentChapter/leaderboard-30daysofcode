@@ -5,6 +5,7 @@ import './panel.css';
 import app from '../backend';
 import { collection, getFirestore, query, getDocs, updateDoc, where } from "firebase/firestore";
 import axios from 'axios';
+import { dayCounter } from '../Home/DayCount';
 const db = getFirestore(app);
 
 async function removeInactiveUsers() {
@@ -95,7 +96,7 @@ export default function Panel() {
   };
   var [rows,setRows] = useState<Array<RowType>>([]);
   var rank=1;
-
+  const days=dayCounter();
   async function users() {
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
@@ -105,7 +106,7 @@ export default function Panel() {
       const repo= doc.get('repo');
       const commits = await fetchCommits(id, repo);
       const issues = await fetchIssues(id, repo);
-      const avgCom = await calculateAverageCommits(id, repo, 7);
+      const avgCom = await calculateAverageCommits(id, repo, days);
       var strikes=await striker(id, repo);
       if(strikes>3){
         await updateDoc(doc.ref, {
