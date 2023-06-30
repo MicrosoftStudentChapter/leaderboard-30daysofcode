@@ -99,7 +99,7 @@ export default function Panel() {
   const [rows, setRows] = useState<Array<RowType>>([]);
   const rank = 1;
 
-
+  const days=dayCounter();
   async function users() {
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
@@ -110,7 +110,7 @@ export default function Panel() {
       const commits = await fetchCommits(id, repo);
       const issues = await fetchIssues(id, repo);
 
-      const avgCom = await calculateAverageCommits(id, repo, 7);
+      const avgCom = await calculateAverageCommits(id, repo, days);
       const strikes = await striker(id, repo);
       if (strikes > 3) {
 
