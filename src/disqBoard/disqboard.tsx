@@ -2,7 +2,7 @@ import background from '../Assets/background.svg';
 import {Typography, Table, TableBody ,TableCell,TableContainer,TableHead,TableRow,Paper} from '@mui/material';
 import logo from '../Assets/MLSC logo.png';
 import './disqboard.css';
-import DayCount from '../Home/DayCount';
+import DayCount,{dayCounter} from '../Home/DayCount';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -102,6 +102,7 @@ function DisqPanel() {
         setRows([...rows]);
       }
       
+    const days=dayCounter();
     async function users() {
     const q = query(collection(db, "users"),where("disqualified", "==", true));
     const querySnapshot = await getDocs(q);
@@ -111,7 +112,7 @@ function DisqPanel() {
         const repo= await doc.get('repo');
         const commits = await fetchCommits(id, repo);
         const issues = await fetchIssues(id, repo);
-        const avgCom = await calculateAverageCommits(id, repo, 7);
+        const avgCom = await calculateAverageCommits(id, repo, days);
             updatedRows.push(
                 createData(
                     id,
@@ -131,6 +132,7 @@ function DisqPanel() {
     }, []);
     if(rows.length===0) return <><br/><br/><Typography variant="h4" align="center">Loading...</Typography></>
     return <><div className='table'>
+    <Typography variant='h5' align='center'>Disqualified Participants</Typography><br />
     <TableContainer component={Paper}>
         <Table>
             <TableHead>
