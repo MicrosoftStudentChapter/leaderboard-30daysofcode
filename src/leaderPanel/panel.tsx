@@ -1,11 +1,10 @@
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Stack } from '@mui/material';
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './panel.css';
 import app from '../backend';
 import { collection, getFirestore, query, getDocs, updateDoc, where } from "firebase/firestore";
 import axios from 'axios';
-import SearchIcon from '@mui/icons-material/Search';
 import { dayCounter } from '../Home/DayCount'; 
 const db = getFirestore(app);
 
@@ -99,7 +98,7 @@ export default function Panel() {
   const [rows, setRows] = useState<Array<RowType>>([]);
   const rank = 1;
 
-
+  const days=dayCounter();
   async function users() {
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
@@ -110,7 +109,7 @@ export default function Panel() {
       const commits = await fetchCommits(id, repo);
       const issues = await fetchIssues(id, repo);
 
-      const avgCom = await calculateAverageCommits(id, repo, 7);
+      const avgCom = await calculateAverageCommits(id, repo, days);
       const strikes = await striker(id, repo);
       if (strikes > 3) {
 
@@ -239,22 +238,23 @@ export default function Panel() {
 
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<RowType[]>([]);
+  const [searchExists, setSearchExists] = useState(true);
 
-
-  const handleSearch = () => {
+  function handleSearch(val:string) {
+    setSearchInput(val);
     const filteredResults = rows.filter((row) => {
       const usernameMatch = row.name.toLowerCase().includes(searchInput.toLowerCase());
       const projectMatch = row.project.toLowerCase().includes(searchInput.toLowerCase());
       return usernameMatch || projectMatch;
     });
-    setSearchResults(filteredResults);
+    if(filteredResults.length === 0) {setSearchExists(false)} else if(searchInput.length<2){setSearchExists(true);setSearchResults(rows)} else {setSearchExists(true); setSearchResults(filteredResults)}
+    
   };
 
   removeInactiveUsers();
 
   useEffect(() => {
     users();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   
@@ -262,19 +262,29 @@ export default function Panel() {
 
   if (rows.length === 0) return <><br /><br /><Typography variant="h4" align="center">Loading...</Typography></>
   return (
-    <div className='table'>
-      <Paper className='searchBar' sx={{ marginLeft: "auto" , backgroundColor:"grey"}}>
-        <Stack direction="row">
-          
+    <div className='table' style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
           <TextField 
-          sx={{color: "black"}}
+          variant='outlined'
+          sx={{alignContent:"center",display:'flex',justifyItems:'center',width:'50%'}}
           inputProps={{className:"textfield_input"}}
-          label="Search by username or project name" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} variant="standard" />
-
-          <Button variant="text" sx={{ margin: "auto" }} onClick={handleSearch}><SearchIcon sx={{ color: "whitesmoke" }} /></Button>
-        </Stack>
-      </Paper>
-      <br />
+          label="Search by username or project name" 
+          value={searchInput} 
+          onChange={(e) => handleSearch(e.target.value)}
+          color='primary'
+          
+          InputProps={{
+            style: {
+              backgroundColor: 'white',
+            }
+          }}
+          InputLabelProps={{
+            style: {
+              color: 'grey',
+            }
+          }}
+           />
+          {!searchExists && <><Typography variant="h6" align="center">Search Not Found</Typography></>}
+     <br />
 
       <TableContainer component={Paper}>
         <Table>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
-
+var date='2023-07-03T00:00:00Z'
 export default function DayCount() {
-    const startDate = new Date('2023-07-03T00:00:00Z');
+    const startDate = new Date(date);
     const currentTime = new Date();
     
     const timeDiff = currentTime.getTime() - startDate.getTime();
@@ -23,7 +23,7 @@ export default function DayCount() {
     return <Typography variant='h4' sx={{ marginLeft: "auto" }}>Day {dayCount}</Typography>;
 }
 export function dayCounter() {
-    const startDate = new Date('2023-06-26T00:00:00Z');
+    const startDate = new Date(date);
     const currentTime = new Date();
     
     const timeDiff = currentTime.getTime() - startDate.getTime();
