@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 
 export default function DayCount() {
-    const startDate = new Date('2023-06-26T00:00:00Z');
+    const startDate = new Date('2023-07-03T00:00:00Z');
     const currentTime = new Date();
     
     const timeDiff = currentTime.getTime() - startDate.getTime();
