@@ -4,6 +4,7 @@ import logo from '../Assets/MLSC logo.png';
 import './leaderboard.css';
 import DayCount from '../Home/DayCount';
 
+
 export default function LeaderboardPage(){
     return (
         <div style={{ backgroundImage: `url(${background})`, backgroundSize:'cover', height: '100vh' }}>
