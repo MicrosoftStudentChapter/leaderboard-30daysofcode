@@ -6,6 +6,7 @@ import app from '../backend';
 import { collection, getFirestore, query, getDocs, updateDoc, where } from "firebase/firestore";
 import axios from 'axios';
 import SearchIcon from '@mui/icons-material/Search';
+import { dayCounter } from '../Home/DayCount'; 
 const db = getFirestore(app);
 
 async function removeInactiveUsers() {
@@ -94,8 +95,10 @@ export default function Panel() {
     score: number;
     strikes: number;
   };
+
   const [rows, setRows] = useState<Array<RowType>>([]);
   const rank = 1;
+
 
   async function users() {
     const q = query(collection(db, "users"));
@@ -106,9 +109,11 @@ export default function Panel() {
       const repo = doc.get('repo');
       const commits = await fetchCommits(id, repo);
       const issues = await fetchIssues(id, repo);
+
       const avgCom = await calculateAverageCommits(id, repo, 7);
       const strikes = await striker(id, repo);
       if (strikes > 3) {
+
         await updateDoc(doc.ref, {
           disqualified: true
         });
