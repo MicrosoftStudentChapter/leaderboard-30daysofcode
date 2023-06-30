@@ -5,7 +5,7 @@ import './panel.css';
 import app from '../backend';
 import { collection, getFirestore, query, getDocs, updateDoc, where } from "firebase/firestore";
 import axios from 'axios';
-import { dayCounter } from '../Home/DayCount'; 
+import { dayCounter } from '../Home/DayCount';
 const db = getFirestore(app);
 
 async function removeInactiveUsers() {
@@ -98,8 +98,9 @@ export default function Panel() {
   const [rows, setRows] = useState<Array<RowType>>([]);
   const rank = 1;
 
-  const days=dayCounter();
+  const days = dayCounter();
   async function users() {
+    try{
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
     const updatedRows = [];
@@ -131,6 +132,7 @@ export default function Panel() {
           )
         );
       }
+      
 
     }
 
@@ -143,7 +145,13 @@ export default function Panel() {
     });
 
     setRows(updatedRows);
+  }catch (error) {
+    console.error("Failed to fetch user data:", error);
+    setError(true);
+  } finally {
+    setLoading(false);
   }
+}
 
   function sortAccordingToCommits() {
     rows.sort((a, b) => b.commits - a.commits);
@@ -240,16 +248,16 @@ export default function Panel() {
   const [searchResults, setSearchResults] = useState<RowType[]>([]);
   const [searchExists, setSearchExists] = useState(true);
 
-  function handleSearch(val:string) {
+  function handleSearch(val: string) {
     setSearchInput(val);
     const filteredResults = rows.filter((row) => {
       const usernameMatch = row.name.toLowerCase().includes(searchInput.toLowerCase());
       const projectMatch = row.project.toLowerCase().includes(searchInput.toLowerCase());
       return usernameMatch || projectMatch;
     });
-    if(filteredResults.length === 0) {setSearchExists(false)} else if(searchInput.length<2){setSearchExists(true);setSearchResults(rows)} else {setSearchExists(true); setSearchResults(filteredResults)}
-    
-  };
+    if (filteredResults.length === 0) { setSearchExists(false) } else if (searchInput.length < 2) { setSearchExists(true); setSearchResults(rows) } else { setSearchExists(true); setSearchResults(filteredResults) }
+
+  }
 
   removeInactiveUsers();
 
@@ -257,34 +265,58 @@ export default function Panel() {
     users();
   }, []);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+
+
+
+
+  // if (rows.length === 0) return <><br /><br /><Typography variant="h4" align="center">Loading...</Typography></>
+  if (loading) {
+    return (
+      <>
+        <br />
+        <br />
+        <Typography variant="h4" align="center">Loading...</Typography>
+      </>
+    );
+  }
   
-
-
-  if (rows.length === 0) return <><br /><br /><Typography variant="h4" align="center">Loading...</Typography></>
+  if (error) {
+    return (
+      <>
+        <br />
+        <br />
+        <Typography variant="h4" align="center">Error occurred. Please try again later.</Typography>
+      </>
+    );
+  }
+  
   return (
-    <div className='table' style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-          <TextField 
-          variant='outlined'
-          sx={{alignContent:"center",display:'flex',justifyItems:'center',width:'50%'}}
-          inputProps={{className:"textfield_input"}}
-          label="Search by username or project name" 
-          value={searchInput} 
-          onChange={(e) => handleSearch(e.target.value)}
-          color='primary'
-          
-          InputProps={{
-            style: {
-              backgroundColor: 'white',
-            }
-          }}
-          InputLabelProps={{
-            style: {
-              color: 'grey',
-            }
-          }}
-           />
-          {!searchExists && <><Typography variant="h6" align="center">Search Not Found</Typography></>}
-     <br />
+    <div className='table' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <TextField
+        variant='outlined'
+        sx={{ alignContent: "center", display: 'flex', justifyItems: 'center', width: '50%' }}
+        inputProps={{ className: "textfield_input" }}
+        label="Search by username or project name"
+        value={searchInput}
+        onChange={(e) => handleSearch(e.target.value)}
+        color='primary'
+
+        InputProps={{
+          style: {
+            backgroundColor: 'white',
+          }
+        }}
+        InputLabelProps={{
+          style: {
+            color: 'grey',
+          }
+        }}
+      />
+      {!searchExists && <><Typography variant="h6" align="center">Search Not Found</Typography></>}
+      <br />
 
       <TableContainer component={Paper}>
         <Table>
