@@ -11,7 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-backend.tsx
 
 # Editor directories and files
 .vscode/*
