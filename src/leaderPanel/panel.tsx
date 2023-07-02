@@ -218,7 +218,7 @@ export default function Panel() {
             }
           }
 
-          if (linesChanged < 3) {
+          if (linesChanged <=10) {
             try {
               querySnapshot.docs.forEach(async (doc) => {
                 await updateDoc(doc.ref, {
