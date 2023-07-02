@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { collection, addDoc,getFirestore, query, where, getDocs } from "firebase/firestore";
 import app from "../backend";
 import DayCount from './DayCount';
+import logo from '../Assets/MLSC logo.png';
 const db = getFirestore(app);
 export default function Home(){
     const navigate = useNavigate();
@@ -103,7 +104,7 @@ export default function Home(){
       
       <Grid justifyContent="space-between">
       <Typography noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: "flex" } }}>
-          <img src=".././public/Logo.png"  style={{ height: 80, }} />
+          <img src={logo} style={{ height: 80, }} />
           <DayCount />
         </Typography>
       </Grid>
