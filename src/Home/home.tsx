@@ -1,5 +1,6 @@
 import { Typography, TextField, Box, AppBar, Grid, Button} from '@mui/material';
 import { Link } from "react-scroll";
+import logo from '../Assets/MLSC logo.png';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import Detail from './Detail';
 import { useNavigate } from "react-router-dom";
@@ -103,7 +104,7 @@ export default function Home(){
       
       <Grid justifyContent="space-between">
       <Typography noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: "flex" } }}>
-          <img src=".././public/Logo.png"  style={{ height: 80, }} />
+          <img src={logo}  style={{ height: 80, }} />
           <DayCount />
         </Typography>
       </Grid>
