@@ -189,6 +189,8 @@ export default function Panel() {
       const querySnapshot = await getDocs(q);
       const laststrikeSHA = await querySnapshot.docs[0].get('lastStrikeSha');
       const strike = querySnapshot.docs[0].get('strike').empty ? 0 : querySnapshot.docs[0].get('strike');
+      const dis = await querySnapshot.docs[0].get('disqualified')
+      if (dis) return -1;
       if (laststrikeSHA != sha) {
 
 
@@ -200,8 +202,6 @@ export default function Panel() {
             linesChanged += file.changes;
           }
 
-          const dis = await querySnapshot.docs[0].get('disqualified')
-          if (dis) return -1;
 
           if (owner != mostRecentCommit.author.login) {
             try {
