@@ -7,13 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { collection, addDoc,getFirestore, query, where, getDocs } from "firebase/firestore";
 import app from "../backend";
-import DayCount from './DayCount';
+import DayCount,{date} from './DayCount';
+import logo from '../Assets/MLSC logo.png';
+import axios from 'axios';
 const db = getFirestore(app);
 export default function Home(){
     const navigate = useNavigate();
 
     const [idError, setIdError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid id error, 3 - some error occured, 4 - already disqualified
-    const [repoError, setRepoError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid repo error, 3 - some error occured
+    const [repoError, setRepoError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid repo error, 3 - some error occured, 4 - repo should be created today
 
     const [user, setUser] = useState({
         id: "",
@@ -58,6 +60,19 @@ export default function Home(){
         // Handle other status codes
         setRepoError(3);
         return 3;
+      }
+
+      const response2 = await axios.get(`https://api.github.com/repos/${user.id}/${user.repo}`);
+      const data = response2.data;
+      const created_at = new Date(data.created_at);
+      const today = new Date(date);
+      if (created_at.getDate() !== today.getDate()) {
+        // Repo should be created today
+        setRepoError(4);
+        return 4;
+      } else {
+        // Repo created today
+        setRepoError(0);
       }
         
         try {const q = query(collection(db, "users"), where("id", "==", user.id));
@@ -104,7 +119,7 @@ export default function Home(){
       
       <Grid justifyContent="space-between">
       <Typography noWrap component="div" sx={{ mr: 2, display: { xs: 'none', md: "flex" } }}>
-          <img src={logo}  style={{ height: 80, }} />
+          <img src={logo} style={{ height: 80, }} />
           <DayCount />
         </Typography>
       </Grid>
@@ -130,6 +145,7 @@ export default function Home(){
       {idError==1 && <><Typography textAlign="center" >User already exists</Typography><br /></>}
       {idError==2 && <><Typography textAlign="center" >Invalid GitHub ID</Typography><br /></>}
       {idError==4 && <><Typography textAlign="center" >Already disqualified</Typography><br /></>}
+      {repoError==4 && <><Typography textAlign="center" >Repo should be created today</Typography><br /></>}
       {repoError==1 && <><Typography textAlign="center" >Repo already exists</Typography><br /></>}
       {repoError==2 && <><Typography textAlign="center" >Repo does not exists!</Typography><br /></>}
       {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
