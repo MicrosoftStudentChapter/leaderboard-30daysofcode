@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { collection, addDoc,getFirestore, query, where, getDocs } from "firebase/firestore";
 import app from "../backend";
 import DayCount,{date} from './DayCount';
-import logo from '../Assets/MLSC logo.png';
 import axios from 'axios';
 const db = getFirestore(app);
 export default function Home(){
