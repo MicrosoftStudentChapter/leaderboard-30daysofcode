@@ -249,7 +249,7 @@ export default function Panel() {
     });
     if(filteredResults.length === 0) {setSearchExists(false)} else if(searchInput.length<2){setSearchExists(true);setSearchResults(rows)} else {setSearchExists(true); setSearchResults(filteredResults)}
     
-  };
+  }
 
   removeInactiveUsers();
 
