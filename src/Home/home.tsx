@@ -1,6 +1,5 @@
 import { Typography, TextField, Box, AppBar, Grid, Button} from '@mui/material';
 import { Link } from "react-scroll";
-import logo from '../Assets/MLSC logo.png';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import Detail from './Detail';
 import { useNavigate } from "react-router-dom";
