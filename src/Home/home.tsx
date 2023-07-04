@@ -102,7 +102,12 @@ export default function Home(){
                 repo: user.repo,
                 strike: 0,
                 disqualified: false,
-                lastStrikeSha:''//sha of the last strike commit
+                lastStrikeSha:'',//sha of the last strike commit
+                rank:0,
+                totalCommits:0,
+                issAndPrs:0,
+                avgCommits:0,
+                score:0,
             });
             return 0;
           } catch (e) {
@@ -113,6 +118,7 @@ export default function Home(){
         
     }
 
+    const datte = new Date(date);
   return <div className="page">
     <AppBar position="static" color="transparent" elevation={0}>
       
@@ -144,7 +150,7 @@ export default function Home(){
       {idError==1 && <><Typography textAlign="center" >User already exists</Typography><br /></>}
       {idError==2 && <><Typography textAlign="center" >Invalid GitHub ID</Typography><br /></>}
       {idError==4 && <><Typography textAlign="center" >Already disqualified</Typography><br /></>}
-      {repoError==4 && <><Typography textAlign="center" >Repo should be created today</Typography><br /></>}
+      {repoError==4 && <><Typography textAlign="center" >Repo should be created on {datte.toDateString()}</Typography><br /></>}
       {repoError==1 && <><Typography textAlign="center" >Repo already exists</Typography><br /></>}
       {repoError==2 && <><Typography textAlign="center" >Repo does not exists!</Typography><br /></>}
       {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
