@@ -8,7 +8,7 @@ import { collection, addDoc,getFirestore, query, where, getDocs } from "firebase
 import app from "../backend";
 import DayCount,{date} from './DayCount';
 import axios from 'axios';
-import logo from '../assets/MLSC logo.png';
+import logo from '../Assets/MLSC logo.png';
 const db = getFirestore(app);
 export default function Home(){
     const navigate = useNavigate();
