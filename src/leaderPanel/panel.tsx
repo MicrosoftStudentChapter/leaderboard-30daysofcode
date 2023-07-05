@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './panel.css';
 import app from '../backend';
-import { collection, getFirestore, query, getDocs } from "firebase/firestore";
+import { collection, getFirestore, query, getDocs, QuerySnapshot, DocumentData } from "firebase/firestore";
 const db = getFirestore(app);
 
 export default function Panel(forDisqualified: boolean) {
@@ -58,122 +58,95 @@ export default function Panel(forDisqualified: boolean) {
   const [searchResults, setSearchResults] = useState<Array<RowTypeNotDisq>>([]);
   const [searchResultsDisq, setSearchResultsDisq] = useState<Array<RowTypeDisq>>([]);
   const [searchExists, setSearchExists] = useState(true);
-  const [lastFetchTimestamp, setLastFetchTimestamp] = useState<string | null>(null);
+  const [lastFetchTimestamp, setLastFetchTimestamp] = useState<string>(localStorage.getItem('lastFetchTimestamp') || '');
 
   async function users() {
-    try {
-      const q = query(collection(db, "users"));
-      const querySnapshot = await getDocs(q);
-      const updatedRowsNotDisq = [];
-      // for (const doc of querySnapshot.docs) {
-      //   const id = doc.get('id');
-      //   const repo = doc.get('repo');
-      //   const commits = await fetchCommits(id, repo);
-      //   const issues = await fetchIssues(id, repo);
+    try{
 
-      //   const avgCom = await calculateAverageCommits(id, repo, days);
-      //   const strikes = await striker(id, repo);
-      //   if (strikes > 3) {
-
-      //     await updateDoc(doc.ref, {
-      //       disqualified: true
-      //     });
-      //   }
-      //   if (strikes <= 3 && strikes != -1) {
-      //     updatedRows.push(
-      //       createData(
-      //         rank,
-      //         id,
-      //         repo,
-      //         commits,
-      //         issues,
-      //         avgCom,
-      //         0.8 * commits + 0.5 * issues + avgCom,
-      //         strikes
-      //       )
-      //     );
-      //   }
-
-
-      // }
-
-      
       const currentTime = new Date();
-      setLastFetchTimestamp(currentTime.toISOString());
-      const storedTimestamp = lastFetchTimestamp ? new Date(lastFetchTimestamp) : null;
-      const timeDifference = storedTimestamp ? currentTime.getTime() - storedTimestamp.getTime() : undefined;
-      const shouldUpdateLocalStorage = !storedTimestamp || timeDifference === undefined || timeDifference > 35 * 60 * 1000; // 35 minutes in milliseconds
-
-      if (!shouldUpdateLocalStorage) {
-        const storedData = localStorage.getItem('querySnapshot');
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          // Update the state with the retrieved data
-          setRows(parsedData.rows);
-          // ...
-          return; // Exit the function since data is retrieved from local storage
+      const storedTimestamp = lastFetchTimestamp!='' ? new Date(lastFetchTimestamp) : null;
+      const timeDifference = storedTimestamp!=null ? currentTime.getTime() - storedTimestamp.getTime() : undefined;
+      const firstUse = storedTimestamp==null || timeDifference === undefined; // 35 minutes in milliseconds
+      var querySnapshot:QuerySnapshot<DocumentData>;
+      var data;
+      if (firstUse) {
+        const q = query(collection(db, "users"));
+         querySnapshot = await getDocs(q);
+         data = querySnapshot.docs.map((doc) => doc.data());
+         localStorage.setItem('querySnapshot', JSON.stringify(data));
+        //  set last fetch timestamp
+        setLastFetchTimestamp(currentTime.toISOString());
+        localStorage.setItem('lastFetchTimestamp', currentTime.toISOString());
+      }else{
+        if(timeDifference>30*60*1000){
+          const q = query(collection(db, "users"));
+          querySnapshot = await getDocs(q);
+          data = querySnapshot.docs.map((doc) => doc.data());
+          localStorage.setItem('querySnapshot', JSON.stringify(data));
+          //  set last fetch timestamp
+          setLastFetchTimestamp(currentTime.toISOString());
+          localStorage.setItem('lastFetchTimestamp', currentTime.toISOString());
+        }else{
+          data = JSON.parse(localStorage.getItem('querySnapshot') || '');
         }
       }
-      if (!forDisqualified) {
-        for (const doc of querySnapshot.docs) {
-          if (doc.get('disqualified') === false) {
-            const id = doc.get('id');
-            const repo = doc.get('repo');
-            const commits = doc.get('totalCommits');
-            const issues = doc.get('issAndPrs');
-            const avgCom = doc.get('avgCommits');
-            const rank = doc.get('rank');
-            const strikes = doc.get('strike');
-            const score = doc.get('score');
-            updatedRowsNotDisq.push(
-              createDataNotDisq(
-                rank,
-                id,
-                repo,
-                commits,
-                issues,
-                avgCom,
-                score,
-                strikes
-              )
-            );
-          }
-        }
-        updatedRowsNotDisq.sort((a, b) => b.score - a.score);
-        setRows(updatedRowsNotDisq);
-      } else {
-        for (const doc of querySnapshot.docs) {
-          if (doc.get('disqualified') === true) {
-            const id = doc.get('id');
-            const repo = doc.get('repo');
-            const commits = doc.get('totalCommits');
-            const issues = doc.get('issAndPrs');
-            const avgCom = doc.get('avgCommits');
-            const score = doc.get('score');
-            updatedRowsNotDisq.push(
-              createDataDisq(
-                id,
-                repo,
-                commits,
-                issues,
-                avgCom,
-                score
-              )
-            );
-          }
-        }
-        updatedRowsNotDisq.sort((a, b) => b.score - a.score);
-        setRowsDisq(updatedRowsNotDisq);
-      }
 
+    const updatedRowsNotDisq:RowTypeNotDisq[]=[];
+    const updatedRowsDisq:RowTypeDisq[]=[];
 
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
+      data.forEach((doc: any) => {
+        if(doc.disqualified===false){
+          const id = doc.id;
+          const repo = doc.repo;
+          const commits=doc.totalCommits;
+          const issues=doc.issAndPrs;
+          const avgCom=doc.avgCommits;
+          const rank=doc.rank;
+          const strikes=doc.strike;
+          const score=doc.score;
+          updatedRowsNotDisq.push(
+            createDataNotDisq(
+              rank,
+              id,
+              repo,
+              commits,
+              issues,
+              avgCom,
+              score,
+              strikes
+            )
+          );
+        }else{
+          const id = doc.id;
+          const repo = doc.repo;
+          const commits=doc.totalCommits;
+          const issues=doc.issAndPrs;
+          const avgCom=doc.avgCommits;
+          const score=doc.score;
+          updatedRowsDisq.push(
+            createDataDisq(
+              id,
+              repo,
+              commits,
+              issues,
+              avgCom,
+              score
+            )
+          );
+        }
+  });
+    updatedRowsNotDisq.sort((a, b) => b.score - a.score);
+    setRows(updatedRowsNotDisq);
+    updatedRowsDisq.sort((a, b) => b.score - a.score);
+    setRowsDisq(updatedRowsDisq);
+  
+  }catch (error) {
+    console.error("Failed to fetch user data:", error);
+    setError(true);
+  } finally {
+    setLoading(false);
   }
+}
 
   function sortAccordingToCommits() {
     rows.sort((a, b) => b.commits - a.commits);
@@ -230,23 +203,7 @@ export default function Panel(forDisqualified: boolean) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    // Retrieve data from local storage
-    const storedData = localStorage.getItem('leaderboardData');
-    const storedTimestamp = localStorage.getItem('lastFetchTimestamp');
-
-    // Calculate time difference
-    const currentTime = new Date();
-    const timeDifference = storedTimestamp ? currentTime.getTime() - new Date(storedTimestamp).getTime() : undefined;
-    const shouldUpdateLocalStorage = !storedTimestamp || timeDifference === undefined || timeDifference > 30 * 60 * 1000; // 30 minutes in milliseconds
-
-    // Check if stored data exists and should be updated
-    if (storedData && !shouldUpdateLocalStorage) {
-      // Use stored data
-      setRows(JSON.parse(storedData));
-    } else {
-      // Fetch data from Firestore
       users();
-    }
   }, []);
 
   // useEffect(() => {
