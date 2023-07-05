@@ -171,6 +171,25 @@ export default function Panel(forDisqualified: boolean) {
     rows.sort((a, b) => b.strikes - a.strikes);
     setRows([...rows]);
   }
+  function sortAccordingToCommitsDisq() {
+    rowsDisq.sort((a, b) => b.commits - a.commits);
+    setRowsDisq([...rowsDisq]);
+  }
+
+  function sortAccordingToIssuesDisq() {
+    rowsDisq.sort((a, b) => b.issues - a.issues);
+    setRowsDisq([...rowsDisq]);
+  }
+
+  function sortAccordingToAvgCommDisq() {
+    rowsDisq.sort((a, b) => b.avgComm - a.avgComm);
+    setRowsDisq([...rowsDisq]);
+  }
+
+  function sortAccordingToScoreDisq() {
+    rowsDisq.sort((a, b) => b.score - a.score);
+    setRowsDisq([...rowsDisq]);
+  }
 
   // const [searchInput, setSearchInput] = useState('');
   // const [searchResults, setSearchResults] = useState<Array<RowTypeNotDisq>>([]);
@@ -324,10 +343,10 @@ export default function Panel(forDisqualified: boolean) {
               <TableRow>
                 <TableCell align="center" >Name</TableCell>
                 <TableCell align="center">Project</TableCell>
-                <TableCell align="center" onClick={sortAccordingToCommits}>Total Commits</TableCell>
-                <TableCell align="center" onClick={sortAccordingToIssues}>Issues and Pull Requests</TableCell>
-                <TableCell align="center" onClick={sortAccordingToAvgComm} title='Total commits divided by number of days passed'>Average Commits per Day</TableCell>
-                <TableCell align="center" onClick={sortAccordingToScore} title='0.8*Commits + 0.5*issues + average commits'>Total Score</TableCell>
+                <TableCell align="center" onClick={sortAccordingToCommitsDisq}>Total Commits</TableCell>
+                <TableCell align="center" onClick={sortAccordingToIssuesDisq}>Issues and Pull Requests</TableCell>
+                <TableCell align="center" onClick={sortAccordingToAvgCommDisq} title='Total commits divided by number of days passed'>Average Commits per Day</TableCell>
+                <TableCell align="center" onClick={sortAccordingToScoreDisq} title='0.8*Commits + 0.5*issues + average commits'>Total Score</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
