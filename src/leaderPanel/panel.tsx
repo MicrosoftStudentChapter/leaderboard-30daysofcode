@@ -1,5 +1,5 @@
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
-import { useState, useEffect, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './panel.css';
 import app from '../backend';
