@@ -58,7 +58,9 @@ export default function Panel(forDisqualified: boolean) {
     try{
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
     const updatedRowsNotDisq = [];
+    const updatedRowsDisq = [];
     // for (const doc of querySnapshot.docs) {
     //   const id = doc.get('id');
     //   const repo = doc.get('repo');
@@ -92,7 +94,6 @@ export default function Panel(forDisqualified: boolean) {
     // }
 
     
-    if(!forDisqualified){
       for (const doc of querySnapshot.docs) {
         if(doc.get('disqualified')===false){
           const id = doc.get('id');
@@ -115,34 +116,29 @@ export default function Panel(forDisqualified: boolean) {
               strikes
             )
           );
+        }else{
+          const id = doc.get('id');
+          const repo = doc.get('repo');
+          const commits=doc.get('totalCommits');
+          const issues=doc.get('issAndPrs');
+          const avgCom=doc.get('avgCommits');
+          const score=doc.get('score');
+          updatedRowsDisq.push(
+            createDataDisq(
+              id,
+              repo,
+              commits,
+              issues,
+              avgCom,
+              score
+            )
+          );
         }
   }
     updatedRowsNotDisq.sort((a, b) => b.score - a.score);
     setRows(updatedRowsNotDisq);
-  }else{
-    for (const doc of querySnapshot.docs) {
-      if(doc.get('disqualified')===true){
-        const id = doc.get('id');
-        const repo = doc.get('repo');
-        const commits=doc.get('totalCommits');
-        const issues=doc.get('issAndPrs');
-        const avgCom=doc.get('avgCommits');
-        const score=doc.get('score');
-        updatedRowsNotDisq.push(
-          createDataDisq(
-            id,
-            repo,
-            commits,
-            issues,
-            avgCom,
-            score
-          )
-        );
-      }
-  }
-  updatedRowsNotDisq.sort((a, b) => b.score - a.score);
-    setRowsDisq(updatedRowsNotDisq);
-  }
+    updatedRowsDisq.sort((a, b) => b.score - a.score);
+    setRowsDisq(updatedRowsDisq);
   }catch (error) {
     console.error("Failed to fetch user data:", error);
     setError(true);
