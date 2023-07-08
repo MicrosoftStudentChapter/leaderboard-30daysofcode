@@ -1,4 +1,3 @@
-import background from '../Assets/background.svg';
 import Panel from '../leaderPanel/panel';
 import logo from '../Assets/MLSC logo.png';
 import './leaderboard.css';
