@@ -27,14 +27,3 @@
     display: flex;
     align-items: flex-end;
 }
-
-.disqHeading{
-    box-sizing: border-box;
-    display: flex;
-    align-items: flex-end;
-}
-
-.h2{
-    font-size: 2vw;
-
-}

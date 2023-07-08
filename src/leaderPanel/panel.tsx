@@ -59,6 +59,7 @@ export default function Panel(forDisqualified: boolean) {
   const [searchResultsDisq, setSearchResultsDisq] = useState<Array<RowTypeDisq>>([]);
   const [searchExists, setSearchExists] = useState(true);
   const [lastFetchTimestamp, setLastFetchTimestamp] = useState<string>(localStorage.getItem('lastFetchTimestamp') || '');
+  const [date, setDate] = useState('');
 
   async function users() {
     try{
@@ -95,6 +96,11 @@ export default function Panel(forDisqualified: boolean) {
     const updatedRowsDisq:RowTypeDisq[]=[];
 
       data.forEach((doc: any) => {
+        if(doc.time!==undefined){
+          setDate(doc.time);
+          // jump to next iteration
+          return;
+        }
         if(doc.disqualified===false){
           const id = doc.id;
           const repo = doc.repo;
@@ -307,6 +313,7 @@ export default function Panel(forDisqualified: boolean) {
             </TableBody>
           </Table>
         </TableContainer>
+        <Typography align="center" style={{marginTop:'20px'}}>Database last updated on {date}</Typography>
       </div>
     );
   } else {
@@ -363,6 +370,7 @@ export default function Panel(forDisqualified: boolean) {
             </TableBody>
           </Table>
         </TableContainer>
+        <Typography align="center" style={{marginTop:'20px'}}>Database last updated on {date}</Typography>
       </div>
     );
   }

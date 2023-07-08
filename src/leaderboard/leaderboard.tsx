@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function LeaderboardPage(){
     const navigate = useNavigate();
     return (
-        <div style={{ backgroundImage: `url(${background})`, backgroundSize:'cover', height: '100vh' }}>
+        <div className='body'>
             <div className='logoAndDay'>
                 <img src={logo} alt="MLSC Logo" className='logo'/>
                 <div className='headingBox'>
