@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
-export const date='2023-07-03T00:00:00Z'
+export const date='2023-07-08T00:00:00Z'
 export default function DayCount() {
     const startDate = new Date(date);
     const currentTime = new Date();
