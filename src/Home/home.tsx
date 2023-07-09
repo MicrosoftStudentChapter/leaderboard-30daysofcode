@@ -126,6 +126,7 @@ export default function Home(){
 
     const datte = new Date(date);
   return <div className="page">
+    <div style={{height:'100vh'}}>
     <AppBar position="static" color="transparent" elevation={0}>
       
       <Grid justifyContent="space-between">
@@ -137,12 +138,12 @@ export default function Home(){
 
     </AppBar>
     <Box textAlign="center" ><Typography variant="h2" >Welcome to 30 Days of Code🔥</Typography><br />
-    <div style={{display:'flex',gap:'5px',justifyContent:'center'}}>
+    <div style={{display:'flex',gap:'5px',justifyContent:'center', marginTop:'3%'}}>
       <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button>
       <Button variant="contained" onClick={()=>navigate("/disqualified")}>Disqualified</Button>
     </div><br /><br />
       <Typography>Enter your GitHub ID
-        <Tooltip title='For eg. - If your profile link is www.github.com/githubID/, Then your GitHub ID will be "githubID" part in the link.'>
+        <Tooltip placement='right' title='For eg. - If your profile link is www.github.com/githubID/, Then your GitHub ID will be "githubID" part in the link.'>
           <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
         </Tooltip>
       </Typography><br />
@@ -152,7 +153,7 @@ export default function Home(){
       }} value={user.id} onChange={getUserData} required></TextField><br /><br />
 
       <Typography>Enter your GitHub Repository Name
-        <Tooltip title='For eg. - If your Repository link is www.github.com/githubID/repoName, Then your Repository Name will be "repoName" part in the link.'>
+        <Tooltip placement='right' title='For eg. - If your Repository link is www.github.com/githubID/repoName, Then your Repository Name will be "repoName" part in the link.'>
           <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
         </Tooltip>
       </Typography><br />
@@ -169,11 +170,11 @@ export default function Home(){
       {repoError==2 && <><Typography textAlign="center" >Repo does not exists!</Typography><br /></>}
       {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
       <Button variant="contained" onClick={postData}>Submit</Button><br /><br />
-
-      <Typography textAlign="center" >Know More</Typography>
+      <Typography textAlign="center" style={{position:'absolute',bottom:0,left:0,right:0,marginLeft:'auto',marginRight:'auto'}}>Know More<br/>
       <Link to='detail' smooth={true}><KeyboardDoubleArrowDownIcon /></Link>
-      
+      </Typography>
     </Box>
+    </div>
     <br />
     <div id='detail'>
       <Detail />
