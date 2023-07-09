@@ -1,6 +1,7 @@
-import { Typography, TextField, Box, AppBar, Grid, Button} from '@mui/material';
+import { Typography, TextField, Box, AppBar, Grid, Button, Tooltip} from '@mui/material';
 import { Link } from "react-scroll";
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Detail from './Detail';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
@@ -65,7 +66,7 @@ export default function Home(){
       const data = response2.data;
       const created_at = new Date(data.created_at);
       const today = new Date(date);
-      if (created_at.getDate() !== today.getDate()) {
+      if (created_at.toDateString() !== today.toDateString()) {
         // Repo should be created today
         setRepoError(4);
         return 4;
@@ -109,6 +110,11 @@ export default function Home(){
                 avgCommits:0,
                 score:0,
             });
+            
+            const currentTime = new Date();
+            const timeDiff = currentTime.getTime() - 35 * 60 * 1000;
+            const date = new Date(timeDiff);
+            localStorage.setItem("lastFetchTimestamp", date.toISOString());
             return 0;
           } catch (e) {
             console.error("Error adding document: ", e);
@@ -135,13 +141,21 @@ export default function Home(){
       <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button>
       <Button variant="contained" onClick={()=>navigate("/disqualified")}>Disqualified</Button>
     </div><br /><br />
-      <Typography>Enter your GitHub ID</Typography><br />
+      <Typography>Enter your GitHub ID
+        <Tooltip title='For eg. - If your profile link is www.github.com/githubID/, Then your GitHub ID will be "githubID" part in the link.'>
+          <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
+        </Tooltip>
+      </Typography><br />
       <TextField name='id' label="Github ID" sx={{
         backgroundColor: "whitesmoke",
         borderRadius: '8px' ,
       }} value={user.id} onChange={getUserData} required></TextField><br /><br />
 
-      <Typography>Enter your GitHub Repository Name</Typography><br />
+      <Typography>Enter your GitHub Repository Name
+        <Tooltip title='For eg. - If your Repository link is www.github.com/githubID/repoName, Then your Repository Name will be "repoName" part in the link.'>
+          <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
+        </Tooltip>
+      </Typography><br />
       <TextField label="Github Repo Name" name='repo' color="primary" 
       sx={{
         backgroundColor: "whitesmoke",
