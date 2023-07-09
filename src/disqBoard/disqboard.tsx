@@ -1,4 +1,3 @@
-import background from '../Assets/background.svg';
 import Panel from '../leaderPanel/panel';
 import logo from '../Assets/MLSC logo.png';
 import './disqboard.css';
@@ -9,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function DisqualifiedPage(){
     const navigate = useNavigate();
     return (
-        <div style={{height:'100vh'}}>
-        <div style={{ backgroundImage: `url(${background})`, backgroundSize:'cover'}}>
+        <div>
             <div className='logoAndDay'>
                 <img src={logo} alt="MLSC Logo" className='logo'/>
                 <div className='headingBox'>
@@ -26,7 +24,6 @@ export default function DisqualifiedPage(){
                 <Button variant="contained" onClick={()=>navigate("/")} style={{width:'8%'}}>Home</Button>
             </div>
             {Panel(true)}
-        </div>
         </div>
     );
 }
