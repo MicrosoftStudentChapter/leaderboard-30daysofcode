@@ -1,8 +1,9 @@
 import { Box } from '@mui/material';
+import  logo  from '../Assets/MLSC logo.png'
 import './detail.css'
 export default function Detail() {
     return <div className="detailed">
-        <img src="./Logo.png" className="imglogo" />
+        <img src={logo} className="imglogo" />
         <Box className="boxo" >
             <div className="flexo">
                 <h3 className="hero" >
