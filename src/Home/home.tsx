@@ -14,25 +14,48 @@ const db = getFirestore(app);
 export default function Home(){
     const navigate = useNavigate();
 
-    const [idError, setIdError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid id error, 3 - some error occured, 4 - already disqualified
-    const [repoError, setRepoError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid repo error, 3 - some error occured, 4 - repo should be created today
+    const [idError, setIdError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid id error, 3 - some error occured, 4 - already disqualified, 5 - empty
+    const [repoError, setRepoError] = useState(0); // 0 - no error, 1 - already exists error, 2 - invalid repo error, 3 - some error occured, 4 - repo should be created today, 5 - empty
+    const [emailError, setEmailError] = useState(0); // 0 - no error, 2 - invalid email, 3 - some error occured, 5 - empty
 
     const [user, setUser] = useState({
         id: "",
         repo: "",
+        email: ""
     });
 
     const getUserData = (e: any) => {
-        console.log(e.target.value);
         setUser({
             ...user,
             [e.target.name]: e.target.value,
         });
     };
     
-
+    function isValidEmail(email:string) {
+      return /\S+@\S+\.\S+/.test(email);
+    }
     async function postData (){
-        if(user.id==="" || user.repo==="") return;
+      setIdError(0);
+      setRepoError(0);
+      setEmailError(0);
+
+        if(user.id==="" || user.repo==="" || user.email===""){
+          if(user.id===""){
+            setIdError(5);
+          }
+          if(user.repo===""){
+            setRepoError(5);
+          }
+          if(user.email===""){
+            setEmailError(5);
+          }
+          return;
+        }
+
+        if(!isValidEmail(user.email)){
+          setEmailError(2);
+          return;
+        }
         
       const response = await fetch(`https://api.github.com/users/${user.id}`);
       if (response.status === 200) {
@@ -101,6 +124,7 @@ export default function Home(){
             addDoc(collection(db, "users"), {
                 id: user.id,
                 repo: user.repo,
+                email: user.email,
                 strike: 0,
                 disqualified: false,
                 lastStrikeSha:'',//sha of the last strike commit
@@ -138,16 +162,16 @@ export default function Home(){
 
     </AppBar>
     <Box textAlign="center" ><Typography variant="h2" >Welcome to 30 Days of Code🔥</Typography><br />
-    <div style={{display:'flex',gap:'5px',justifyContent:'center', marginTop:'3%'}}>
+    <div style={{display:'flex',gap:'5px',justifyContent:'center', marginTop:'0.5%'}}>
       <Button variant="contained" onClick={()=>navigate("/leaderboard")}>Leader Board</Button>
       <Button variant="contained" onClick={()=>navigate("/disqualified")}>Disqualified</Button>
-    </div><br /><br />
+    </div><br />
       <Typography>Enter your GitHub ID
         <Tooltip placement='right' title='For eg. - If your profile link is www.github.com/githubID/, Then your GitHub ID will be "githubID" part in the link.'>
           <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
         </Tooltip>
-      </Typography><br />
-      <TextField name='id' label="Github ID" sx={{
+      </Typography>
+      <TextField name='id' label="Github ID" error={idError!=0} sx={{
         backgroundColor: "whitesmoke",
         borderRadius: '8px' ,
       }} value={user.id} onChange={getUserData} required></TextField><br /><br />
@@ -156,19 +180,35 @@ export default function Home(){
         <Tooltip placement='right' title='For eg. - If your Repository link is www.github.com/githubID/repoName, Then your Repository Name will be "repoName" part in the link.'>
           <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
         </Tooltip>
-      </Typography><br />
-      <TextField label="Github Repo Name" name='repo' color="primary" 
+      </Typography>
+      <TextField label="Github Repo Name" name='repo' color="primary" error={repoError!=0}
       sx={{
         backgroundColor: "whitesmoke",
         borderRadius: '8px' ,
       }} value={user.repo} onChange={getUserData} required></TextField><br /><br />
-      {idError==1 && <><Typography textAlign="center" >User already exists</Typography><br /></>}
-      {idError==2 && <><Typography textAlign="center" >Invalid GitHub ID</Typography><br /></>}
-      {idError==4 && <><Typography textAlign="center" >Already disqualified</Typography><br /></>}
-      {repoError==4 && <><Typography textAlign="center" >Repo should be created on {datte.toDateString()}</Typography><br /></>}
-      {repoError==1 && <><Typography textAlign="center" >Repo already exists</Typography><br /></>}
-      {repoError==2 && <><Typography textAlign="center" >Repo does not exists!</Typography><br /></>}
-      {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later :/</Typography><br /></>}
+      <Typography>Enter your email
+        <Tooltip placement='right' title='The email is being collected to send reminder email to a participant of he/she forgets to do a commit till EOD'>
+          <InfoOutlinedIcon fontSize='small' style={{marginBottom:'-4px',marginLeft:'4px', opacity:'0.6'}}/>
+        </Tooltip>
+      </Typography>
+      <TextField label="Email ID" name='email' color="primary" inputMode='email' error={emailError!=0}
+      sx={{
+        backgroundColor: "whitesmoke",
+        borderRadius: '8px' ,
+      }} value={user.email} onChange={getUserData} required></TextField><br /><br />
+      <b>
+      {idError==1 && <><Typography textAlign="center" >User already exists</Typography></>}
+      {idError==2 && <><Typography textAlign="center" >Invalid GitHub ID</Typography></>}
+      {idError==4 && <><Typography textAlign="center" >Already disqualified</Typography></>}
+      {idError==5 && <><Typography textAlign="center" >Github ID can't be empty</Typography></>}
+      {repoError==5 && <><Typography textAlign="center" >Repo can't be empty</Typography></>}
+      {emailError==5 && <><Typography textAlign="center" >Email can't be empty</Typography></>}
+      {emailError==2 && <><Typography textAlign="center" >Invalid Email</Typography></>}
+      {repoError==4 && <><Typography textAlign="center" >Repo should be created on {datte.toDateString()}</Typography></>}
+      {repoError==1 && <><Typography textAlign="center" >Repo already exists</Typography></>}
+      {repoError==2 && <><Typography textAlign="center" >Repo does not exists!</Typography></>}
+      {repoError==3 && <><Typography textAlign="center" >Some error occured, Please try again later</Typography></>}
+      </b>
       <Button variant="contained" onClick={postData}>Submit</Button><br /><br />
       <Typography textAlign="center" style={{position:'absolute',bottom:0,left:0,right:0,marginLeft:'auto',marginRight:'auto'}}>Know More<br/>
       <Link to='detail' smooth={true}><KeyboardDoubleArrowDownIcon /></Link>
